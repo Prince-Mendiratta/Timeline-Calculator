@@ -1,4 +1,4 @@
-import jest, {describe, expect, test, beforeEach} from '@jest/globals';
+import {describe, expect, test} from '@jest/globals';
 import addTimelineDetails from '../src/index';
 import CONST from '../src/const';
 
