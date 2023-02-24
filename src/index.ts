@@ -7,8 +7,12 @@ import { convertToGithubApiUrl, getBusinessDays } from './helpers/utils';
 import CONST from './const';
 
 async function main(issueLink: string, PRLink: string) {
+    // Get the meta data about the issue
     const issueDetails = await getIssueDetails(convertToGithubApiUrl(issueLink));
+    // Get the assigned date
+    // Hits a different API as needs to filter through comments
     const assignedDate = await getAssignedDate(convertToGithubApiUrl(issueLink, 'comments'));
+    // Details about the PR
     const PRDetails = await getPRDetails(convertToGithubApiUrl(PRLink));
     const daysElapsed = getBusinessDays(assignedDate, PRDetails.mergedAt);
     let timelineAmount: string = CONST.NO_BONUS;

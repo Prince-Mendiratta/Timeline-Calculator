@@ -3,8 +3,16 @@ import logger from './logger';
 import CONST from '../const';
 import { convertToGithubApiUrl } from './utils';
 
+/**
+ * Helper function to send a GET request to github API
+ * and return the results
+ * @param githubLink Github Endpoint
+ * @param params Any extra parameters
+ * @returns {Promise<Object>} JSON response data
+ */
 async function get(githubLink: string, params: Object = {}) {
     let options = {params: params, headers: {}};
+    // Use .env file to get more requests limit
     if(process.env.GITHUB_TOKEN != undefined){
         options.headers = {'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`};
     }
@@ -12,9 +20,16 @@ async function get(githubLink: string, params: Object = {}) {
     return response.data;
 };
 
-export async function getAssignedDate(issueLink: string) {
+/**
+ * Hits the /issues/{issue number}/comments endpoint and
+ * filters through the comments to find the assigned comment and date
+ * @param issueLink Github API Endpoint
+ * @returns {Promise<Date>}
+ */
+export async function getAssignedDate(issueLink: string): Promise<Date> {
     let page = 1;
     logger.debug('Getting assigned date.');
+    // Need to iterate through pages if a long conversation has happened in the issue.
     while(true){
         const issueParams = {
             per_page: 100,
@@ -34,6 +49,11 @@ export async function getAssignedDate(issueLink: string) {
     }
 };
 
+/**
+ * Hits the /pulls/{pull number} endpoint and get the details about the PR
+ * @param PRLink Github API Endpoint
+ * @returns {Promise<Object>}
+ */
 export async function getPRDetails(PRLink: string) {
     logger.debug('Getting PR details.');
     let data = await get(PRLink);
@@ -45,6 +65,12 @@ export async function getPRDetails(PRLink: string) {
     return PRDetails;
 }
 
+/**
+ * Hits the /issues/{issue number} endpoint and /issues/{issue number}/timeline
+ * endpoint to get the Issue creation and Label dates.
+ * @param issueLink Github API Endpoint
+ * @returns {Promise<Object>}
+ */
 export async function getIssueDetails(issueLink: string) {
     logger.debug('Getting Issue details.');
     let issueData = await get(issueLink);

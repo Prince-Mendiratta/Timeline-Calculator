@@ -11,8 +11,13 @@ function addTrailingForwardSlash(url: string) {
     }
     return url;
 }
-
-export function convertToGithubApiUrl(link: string, addPath: string = undefined) {
+/**
+ * Converts the Github Web link to API link and adds extra path
+ * @param link Github Web Link
+ * @param addPath Which path to append at the end
+ * @returns {string}
+ */
+export function convertToGithubApiUrl(link: string, addPath: string = undefined): string {
     link = link.replace(CONST.GITHUB_DOMAIN, CONST.API_GITHUB_DOMAIN);
     link = link.replace(CONST.NORMAL_PR_PATH, CONST.API_PR_PATH);
     if(addPath){
