@@ -14,6 +14,7 @@ async function get(githubLink: string, params: Object = {}) {
 
 export async function getAssignedDate(issueLink: string) {
     let page = 1;
+    logger.debug('Getting assigned date.');
     while(true){
         const issueParams = {
             per_page: 100,
@@ -22,6 +23,7 @@ export async function getAssignedDate(issueLink: string) {
         const comments = await get(issueLink, issueParams);
         for(const comment of comments){
             if(comment.user.login === CONST.MELVIN && CONST.ASSIGNED_REGEX.test(comment.body)){
+                logger.debug(`Got assigned date at page - ${page}.`);
                 return new Date(comment.created_at);
             }
         }
@@ -30,10 +32,10 @@ export async function getAssignedDate(issueLink: string) {
         }
         page += 1;
     }
-    return false;
 };
 
 export async function getPRDetails(PRLink: string) {
+    logger.debug('Getting PR details.');
     let data = await get(PRLink);
     let PRDetails = {
         createdAt: new Date(data.created_at),
@@ -44,10 +46,12 @@ export async function getPRDetails(PRLink: string) {
 }
 
 export async function getIssueDetails(issueLink: string) {
+    logger.debug('Getting Issue details.');
     let issueData = await get(issueLink);
     let helpWantedAt: string = undefined;
     let page = 1;
     let found = false;
+    logger.debug('Getting Label details.');
     while(true){
         const issueParams = {
             per_page: 100,
